@@ -1,4 +1,5 @@
 ﻿using CleanArchitecture.Application.Interfaces;
+using CleanArchitecture.Enterprise.Abstractions;
 using CleanArchitecture.Enterprise.Entities;
 using Microsoft.EntityFrameworkCore;
 using Z.EntityFramework.Plus;

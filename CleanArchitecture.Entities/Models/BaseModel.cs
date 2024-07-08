@@ -1,8 +1,8 @@
 ﻿using CleanArchitecture.Enterprise.Abstractions;
 
-namespace CleanArchitecture.Enterprise.Entities;
+namespace CleanArchitecture.Enterprise.Models;
 
-public class BaseEntity : IBaseEntity
+public class BaseModel : IBaseModel
 {
     public Guid Id { get; set; }
 }
