@@ -1,4 +1,5 @@
 using CleanArchitecture.Web;
+using CleanArchitecture.Web.Middlewares;
 
 namespace CleanArchitecture;
 
@@ -22,10 +23,11 @@ public class Program
             app.UseSwaggerUI();
         }
 
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
+
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
-
 
         app.MapControllers();
 

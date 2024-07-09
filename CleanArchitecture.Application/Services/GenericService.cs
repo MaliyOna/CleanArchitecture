@@ -1,27 +1,24 @@
 ﻿using CleanArchitecture.Application.Interfaces;
 using CleanArchitecture.Enterprise.Abstractions;
-using CleanArchitecture.Enterprise.Entities;
-using CleanArchitecture.Enterprise.Models;
+using MapsterMapper;
 
 namespace CleanArchitecture.Application.Services;
 
-public class GenericService<Model, Entity> : IGenericService<Model> 
-    where Model : BaseModel, new()
-    where Entity : class, IBaseEntity, new()
+public class GenericService<Model, Entity> : IGenericService<Model>
+    where Entity : IBaseEntity
 {
+    private readonly IMapper _mapper;
     private readonly IGenericRepository<Entity> _genericRepository;
 
-    public GenericService(IGenericRepository<Entity> genericRepository)
+    public GenericService(IMapper mapper, IGenericRepository<Entity> genericRepository)
     {
+        _mapper = mapper;
         _genericRepository = genericRepository;
     }
 
     public async Task Create(Model model, CancellationToken cancellationToken)
     {
-        var entity = new Entity
-        {
-            Id = model.Id
-        };
+        var entity = _mapper.Map<Entity>(model);
 
         await _genericRepository.Create(entity, cancellationToken);
     }
@@ -35,7 +32,7 @@ public class GenericService<Model, Entity> : IGenericService<Model>
     {
         var result = await _genericRepository.GetAll(cancellationToken);
 
-        return result.Select(x => new Model { Id = x.Id }).ToList();
+        return _mapper.Map<List<Model>>(result);
     }
 
     public async Task<Model?> GetById(Guid id, CancellationToken cancellationToken)
@@ -45,15 +42,12 @@ public class GenericService<Model, Entity> : IGenericService<Model>
         if (result == null)
             throw new Exception();
 
-        return new Model
-        {
-            Id = result.Id
-        };
+        return _mapper.Map<Model?>(result);
     }
 
     public async Task Update(Model model, CancellationToken cancellationToken)
     {
-        var entity = new Entity { Id = model.Id };
+        var entity = _mapper.Map<Entity>(model);
 
         await _genericRepository.Update(entity, cancellationToken);
     }

@@ -1,7 +1,7 @@
 ﻿using CleanArchitecture.Enterprise.Abstractions;
 
 namespace CleanArchitecture.Application.Interfaces;
-public interface IGenericService<Model> where Model : IBaseModel
+public interface IGenericService<Model>
 {
     Task<Model?> GetById(Guid id, CancellationToken cancellationToken);
     Task<List<Model>> GetAll(CancellationToken cancellationToken);

@@ -1,18 +1,20 @@
 ﻿using CleanArchitecture.Application.Interfaces;
 using CleanArchitecture.Enterprise.Abstractions;
-using CleanArchitecture.Web.DTOs;
+using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CleanArchitecture.Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class GenericController<Model, DTO> : ControllerBase where Model : IBaseModel, new() where DTO : IBaseDTO, new()
+public class GenericController<Model, DTO> : ControllerBase where Model : IBaseModel
 {
+    private readonly IMapper _mapper;
     private readonly IGenericService<Model> _genericService;
 
-    public GenericController(IGenericService<Model> genericService)
+    public GenericController(IMapper mapper,IGenericService<Model> genericService)
     {
+        _mapper = mapper;
         _genericService = genericService;
     }
 
@@ -21,10 +23,7 @@ public class GenericController<Model, DTO> : ControllerBase where Model : IBaseM
     {
         var result = await _genericService.GetAll(cancellationToken);
 
-        return result.Select(x => new DTO()
-        {
-            Id = x.Id,
-        }).ToList();
+        return _mapper.Map<List<DTO>>(result);
     }
 
     [HttpGet]
@@ -35,10 +34,7 @@ public class GenericController<Model, DTO> : ControllerBase where Model : IBaseM
         if (result == null)
             throw new Exception();
 
-        return new DTO
-        {
-            Id = result.Id
-        };
+        return _mapper.Map<DTO>(result);
     }
 
     [HttpDelete]
@@ -50,10 +46,7 @@ public class GenericController<Model, DTO> : ControllerBase where Model : IBaseM
     [HttpPut]
     public async Task Update(DTO dto, CancellationToken cancellationToken)
     {
-        var model = new Model
-        {
-            Id = dto.Id
-        };
+        var model = _mapper.Map<Model>(dto);
 
         await _genericService.Update(model, cancellationToken);
     }
@@ -61,10 +54,7 @@ public class GenericController<Model, DTO> : ControllerBase where Model : IBaseM
     [HttpPost]
     public async Task Create(DTO dto, CancellationToken cancellationToken)
     {
-        var model = new Model
-        {
-            Id = dto.Id
-        };
+        var model = _mapper.Map<Model>(dto);
 
         await _genericService.Create(model, cancellationToken);
     }

@@ -1,6 +1,7 @@
 ﻿using CleanArchitecture.Application.Interfaces;
 using CleanArchitecture.Enterprise.Models;
 using CleanArchitecture.Web.DTOs;
+using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CleanArchitecture.Web.Controllers;
@@ -9,8 +10,8 @@ namespace CleanArchitecture.Web.Controllers;
 [Route("api/[controller]")]
 public class CatController : GenericController<CatModel, CatDTO>
 {
-    public CatController(IGenericService<CatModel> genericService)
-        : base(genericService)
+    public CatController(IMapper mapper, IGenericService<CatModel> genericService)
+        : base(mapper, genericService)
     {
         
     }
